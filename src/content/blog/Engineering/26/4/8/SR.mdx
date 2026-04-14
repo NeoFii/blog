@@ -1,6 +1,6 @@
 ---
 heroImage: /src/assets/images/green-leaves-close-up-portrait.jpg
-category: Engineering
+category: Research
 description: ''
 pubDate: 2026-04-08T00:00:00.000Z
 tags:
@@ -11,34 +11,34 @@ title: Geometric Origins of Bias in Deep Neural Networks
 
 # Why Do Neural Networks Play Favorites? A Geometric Answer from the Human Visual System
 
-_How the shape of a class's "perceptual manifold" inside a trained network predicts which categories the model will quietly get wrong — even when the training data is perfectly balanced._
+*How the shape of a class's "perceptual manifold" inside a trained network predicts which categories the model will quietly get wrong — even when the training data is perfectly balanced.*
 
 ## The puzzle: balanced data, biased models
 
 The standard story about bias in deep neural networks goes like this: if your training set has 10× more cats than axolotls, of course the model will be better at cats. Fix the class imbalance, fix the bias.
 
-Except it doesn't quite work. Train a ResNet or a ViT on a _perfectly balanced_ dataset like CIFAR-10 or Caltech-101, and you'll still find that per-class accuracy is uneven — some classes get recognized noticeably better than others, run after run, seed after seed. The long-tail explanation can't reach this. Something else is going on inside the network.
+Except it doesn't quite work. Train a ResNet or a ViT on a *perfectly balanced* dataset like CIFAR-10 or Caltech-101, and you'll still find that per-class accuracy is uneven — some classes get recognized noticeably better than others, run after run, seed after seed. The long-tail explanation can't reach this. Something else is going on inside the network.
 
 A recent paper by Fei Luo, Sitong Guo, and Yanbiao Ma (Jishou University, HIT-Shenzhen, and Renmin University of China) proposes an answer that doesn't come from algorithms at all — it comes from neuroscience. Their claim, in one line: **the geometry of how a class is represented inside the network determines how well the classifier can read it out, and different classes get bent into geometrically different shapes.**
 
 ## Borrowing an idea from the visual cortex
 
-In the human visual system, neurons in the ventral stream (RGC → LGN → V1 → V2 → V4 → PIT → CIT → AIT) respond to objects of the same category in a structured way. The collection of neural responses to, say, every possible view of a cat forms a curved surface in neural activity space — an **object manifold**. Early in the cortex these manifolds are tangled and hard to separate. Deeper in the cortex, they get progressively _untangled_ and flattened, until by the time you reach AIT they're clean enough to discriminate.
+In the human visual system, neurons in the ventral stream (RGC → LGN → V1 → V2 → V4 → PIT → CIT → AIT) respond to objects of the same category in a structured way. The collection of neural responses to, say, every possible view of a cat forms a curved surface in neural activity space — an **object manifold**. Early in the cortex these manifolds are tangled and hard to separate. Deeper in the cortex, they get progressively *untangled* and flattened, until by the time you reach AIT they're clean enough to discriminate.
 
 The authors point out something that's been quietly accumulating in the literature: deep networks look suspiciously similar. If you take a trained image classifier, pass every image of a particular class through the representation network, and plot the embeddings, they lie on a curved, low-dimensional surface inside the high-dimensional feature space. They call this a **class-specific perceptual manifold**.
 
 The analogy sets up a clean hypothesis:
 
 1. The more geometrically complex a class's perceptual manifold, the harder the classifier's job on that class.
-2. When different classes get represented with different complexities, the classifier's accuracy is forced to be uneven. That unevenness _is_ the bias.
+2. When different classes get represented with different complexities, the classifier's accuracy is forced to be uneven. That unevenness *is* the bias.
 
 ## Measuring the shape of a class
 
 To test this, you need a way to quantify "geometric complexity" for a point cloud sitting in a few hundred dimensions. The authors built a Python toolkit called **Perceptual-Manifold-Geometry** (`pip install perceptual-manifold-geometry`) that exposes three complementary measures:
 
-- **Intrinsic dimensionality** — estimated with the TLE method, which drops the usual uniformity assumption of classical MLE estimators and uses nearby samples to stabilize the local dimension estimate. Higher ID means the manifold is genuinely stretching into more directions.
-- **Gaussian curvature** — estimated by fitting a quadratic hypersurface in a local tangent space at each point. The authors derive a closed-form least-squares solution, which is a nice practical detail: no iterative optimization, so you can call it inside a training loop.
-- **Number of topological holes** — computed with persistent homology on a Vietoris–Rips filtration, counting the 1-dimensional loops (β₁) that survive above a persistence threshold τ. Holes are a coordinate-free signal of how fragmented and non-simply-connected the manifold is.
+* **Intrinsic dimensionality** — estimated with the TLE method, which drops the usual uniformity assumption of classical MLE estimators and uses nearby samples to stabilize the local dimension estimate. Higher ID means the manifold is genuinely stretching into more directions.
+* **Gaussian curvature** — estimated by fitting a quadratic hypersurface in a local tangent space at each point. The authors derive a closed-form least-squares solution, which is a nice practical detail: no iterative optimization, so you can call it inside a training loop.
+* **Number of topological holes** — computed with persistent homology on a Vietoris–Rips filtration, counting the 1-dimensional loops (β₁) that survive above a persistence threshold τ. Holes are a coordinate-free signal of how fragmented and non-simply-connected the manifold is.
 
 Each of these captures a different flavor of complexity: dimensionality is about how many directions the data spreads in, curvature is about how twisted those directions are, and holes are about topological obstructions to smooth decision boundaries. A class that scores high on any of them is telling the classifier, "good luck drawing a clean boundary around me."
 
@@ -46,9 +46,9 @@ Each of these captures a different flavor of complexity: dimensionality is about
 
 The setup is deliberately boring in a good way — the point is to rule out confounds, not to design a clever benchmark.
 
-- **Datasets**: CIFAR-10, CIFAR-100, Mini-ImageNet, Caltech-101. All used with balanced class counts, so per-class sample size is not a variable.
-- **Architectures**: a mix of CNNs (ResNet-18/34/50, VGG-19, SeNet-50) and Transformers (ViT-B/16, ViT-B/32). If the geometric story only worked for one family, it'd be suspicious.
-- **Training**: standard recipes, 10 seeds per model.
+* **Datasets**: CIFAR-10, CIFAR-100, Mini-ImageNet, Caltech-101. All used with balanced class counts, so per-class sample size is not a variable.
+* **Architectures**: a mix of CNNs (ResNet-18/34/50, VGG-19, SeNet-50) and Transformers (ViT-B/16, ViT-B/32). If the geometric story only worked for one family, it'd be suspicious.
+* **Training**: standard recipes, 10 seeds per model.
 
 For each fully trained model, the authors extract per-class embeddings from the representation network, compute the three geometric measures for each class's manifold, and then correlate them against per-class top-1 accuracy using Pearson's r.
 
@@ -56,27 +56,27 @@ For each fully trained model, the authors extract per-class embeddings from the 
 
 Across every combination of dataset and architecture, the picture is the same:
 
-- Intrinsic dimensionality vs. accuracy → Pearson correlations around **−0.6 to −0.8**.
-- Gaussian curvature vs. accuracy → similarly strong negative correlations, often in the **−0.55 to −0.80** range.
-- Number of topological holes vs. accuracy → again, **−0.6 to −0.7**-ish across the board.
+* Intrinsic dimensionality vs. accuracy → Pearson correlations around **−0.6 to −0.8**.
+* Gaussian curvature vs. accuracy → similarly strong negative correlations, often in the **−0.55 to −0.80** range.
+* Number of topological holes vs. accuracy → again, **−0.6 to −0.7**-ish across the board.
 
 On CIFAR-10 with ResNet-18, for instance, intrinsic dimensionality correlates at −0.78 with accuracy, Gaussian curvature at −0.80, and number of holes at −0.72. The effect holds equally for ViTs — this isn't a convolutional artifact.
 
-What makes these numbers interesting isn't the magnitude of any single correlation, it's the consistency: three independent geometric signals, seven architectures, four datasets, and the sign and scale of the relationship barely move. The classes a model is worst at are, with striking reliability, the classes whose perceptual manifolds have the highest dimension, the most curvature, or the most holes. And this is happening _on balanced data_, where the traditional long-tail explanation has nothing to say.
+What makes these numbers interesting isn't the magnitude of any single correlation, it's the consistency: three independent geometric signals, seven architectures, four datasets, and the sign and scale of the relationship barely move. The classes a model is worst at are, with striking reliability, the classes whose perceptual manifolds have the highest dimension, the most curvature, or the most holes. And this is happening *on balanced data*, where the traditional long-tail explanation has nothing to say.
 
 ## Why this makes sense
 
 From an optimization standpoint, each of the three measures has a clean interpretation for why it should hurt the classifier:
 
-- **High intrinsic dimension** means the class genuinely spans many directions in feature space, so a linear (or near-linear) classifier head needs more capacity to separate it from everything else.
-- **High Gaussian curvature** means the manifold is twisted, which pushes the decision boundary into awkward, unstable regions — small perturbations in features cause large swings in the predicted class.
-- **Many topological holes** mean the class's region isn't simply connected. A classifier trying to enclose it either has to draw something fragmented (overfitting risk) or miss parts of it (underfitting risk).
+* **High intrinsic dimension** means the class genuinely spans many directions in feature space, so a linear (or near-linear) classifier head needs more capacity to separate it from everything else.
+* **High Gaussian curvature** means the manifold is twisted, which pushes the decision boundary into awkward, unstable regions — small perturbations in features cause large swings in the predicted class.
+* **Many topological holes** mean the class's region isn't simply connected. A classifier trying to enclose it either has to draw something fragmented (overfitting risk) or miss parts of it (underfitting risk).
 
 And on the neuroscience side, the finding is a quiet but real piece of evidence that the resemblance between biological and artificial vision isn't just architectural hand-waving. Both systems seem to work by gradually decoupling and flattening class manifolds, and in both, how much flattening you manage to do sets a ceiling on how well you can recognize that class.
 
 ## Why this matters for building fairer models
 
-If a class is hard to recognize because its manifold is geometrically complex, then the lever for fixing the bias is different from what the long-tail literature usually reaches for. You're not short on samples — you're short on _flatness_. That suggests an interesting training-time intervention: regularize the representation network to produce class manifolds whose intrinsic dimension, curvature, and hole count are low _and_ roughly equal across classes. Instead of reweighting losses or resampling data, you'd be reshaping the geometry of the feature space itself.
+If a class is hard to recognize because its manifold is geometrically complex, then the lever for fixing the bias is different from what the long-tail literature usually reaches for. You're not short on samples — you're short on *flatness*. That suggests an interesting training-time intervention: regularize the representation network to produce class manifolds whose intrinsic dimension, curvature, and hole count are low *and* roughly equal across classes. Instead of reweighting losses or resampling data, you'd be reshaping the geometry of the feature space itself.
 
 The authors flag this as future work rather than claiming a recipe, which is the right level of restraint — but the hypothesis is concrete enough to test, and the toolkit they're releasing makes it considerably easier to test it.
 
@@ -99,10 +99,10 @@ It has already been installed over 4,500 times, which suggests there's real appe
 
 The core message of this paper isn't "here is a new SOTA method." It's a shift in where you look for the origins of bias. The usual frame treats bias as a data problem — imbalanced classes, biased labels, skewed coverage. This work says: even after you've scrubbed all of that, the network will still impose its own geometric preferences, because some classes are genuinely harder to flatten than others inside that particular architecture's feature space. And because that geometry is measurable, it's also — in principle — something you can optimize against.
 
-It's a reminder that "fairness" in a learned model isn't just a property of the training set. It's also a property of the _shape of the representations the model happens to learn_, and that shape has been hiding in plain sight, in a language borrowed from how the brain seems to solve the same problem.
+It's a reminder that "fairness" in a learned model isn't just a property of the training set. It's also a property of the *shape of the representations the model happens to learn*, and that shape has been hiding in plain sight, in a language borrowed from how the brain seems to solve the same problem.
 
----
+***
 
-**Paper:** _Geometric Origins of Bias in Deep Neural Networks: A Human Visual System Perspective_ — Fei Luo, Sitong Guo, Yanbiao Ma.
+**Paper:** *Geometric Origins of Bias in Deep Neural Networks: A Human Visual System Perspective* — Fei Luo, Sitong Guo, Yanbiao Ma.
 
 **Toolkit:** `pip install perceptual-manifold-geometry` · [PyPI](https://pypi.org/project/perceptual-manifold-geometry/) · [GitHub](https://github.com/mayanbiao1234/Geometric-metrics-for-perceptual-manifolds)
