@@ -1,0 +1,17 @@
+---
+import { siteConfig } from '@/site-config'
+import { getLangFromUrl, useTranslations, type Lang } from '@/i18n/utils'
+
+interface Props {
+	lang: Lang
+}
+
+const { lang } = Astro.props
+const t = useTranslations(lang)
+const today = new Date()
+---
+
+<footer class='flex justify-center items-center w-full px-16 h-28 border-t-2'>
+	&copy; {today.getFullYear()}
+	{siteConfig.author}. {t('footer.rights')}
+</footer>
