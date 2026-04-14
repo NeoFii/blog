@@ -10,8 +10,6 @@ node_modules/
 .vercel/
 .vscode/
 
-# tina local state
-tina-lock.json
 
 # logs
 npm-debug.log*
