@@ -16,7 +16,7 @@ const { lang } = Astro.props
 const t = useTranslations(lang)
 const switchLang = lang === 'zh' ? 'en' : 'zh'
 const currentPath = Astro.url.pathname
-const switchPath = lang === 'zh' ? `/en${currentPath}` : currentPath.replace(/^\/en/, '') || '/'
+const switchPath = lang === 'zh' ? currentPath.replace(/^\/zh(?=\/|$)/, '') || '/' : `/zh${currentPath === '/' ? '' : currentPath}`
 ---
 
 <header class='relative flex items-center h-12 font-semibold'>

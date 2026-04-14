@@ -11,8 +11,8 @@ export default defineConfig({
 	site: siteConfig.site,
 	outDir: './dist',
 	i18n: {
-		defaultLocale: 'zh',
-		locales: ['zh', 'en'],
+		defaultLocale: 'en',
+		locales: ['en', 'zh'],
 		routing: {
 			prefixDefaultLocale: false
 		}

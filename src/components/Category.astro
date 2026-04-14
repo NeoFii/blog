@@ -18,8 +18,8 @@ const unsluglifyNameCategory = name ? sluglify(name.toLowerCase()) : ''
 const isActive =
 	activeCategory?.toLocaleLowerCase() === unsluglifyNameCategory ||
 	(currentPath === '/' && !name) ||
-	(currentPath === '/en/' && !name) ||
-	(currentPath === '/en' && !name)
+	(currentPath === '/zh/' && !name) ||
+	(currentPath === '/zh' && !name)
 ---
 
 <a
