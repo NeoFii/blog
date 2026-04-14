@@ -6,6 +6,7 @@ import Tag from '@/components/Tag'
 import type { MarkdownHeading } from 'astro'
 import { Image } from 'astro:assets'
 import { getLangFromUrl, useTranslations } from '@/i18n/utils'
+import { resolveCoverImage } from '@/utils'
 
 type Props = {
 	id: CollectionEntry<'blog'>['id']
@@ -15,17 +16,18 @@ type Props = {
 }
 
 const { data, readTime, headings, id } = Astro.props
-const { title, description, pubDate, heroImage, tags } = data
+const { title, description, pubDate, tags } = data
 
 const articleDate = pubDate.toISOString()
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
+const coverImage = resolveCoverImage(data)
 ---
 
 <BaseLayout
 	title={title}
 	description={description}
-	image={heroImage?.src}
+	image={coverImage?.ogImage}
 	articleDate={articleDate}
 >
 	<article class='min-w-full md:py-4 sm:max-w-none md:max-w-none'>
@@ -52,17 +54,26 @@ const t = useTranslations(lang)
 
 		<>
 			{
-				heroImage && (
-					<Image
-						src={heroImage}
-						width={1000}
-						height={500}
-						quality={100}
-						format='jpg'
+				coverImage?.isExternal ? (
+					<img
+						src={coverImage.src}
 						loading='eager'
-						class='rounded-md w-full max-h-[300px]  md:max-h-[500px] my-8 object-cover'
+						class='rounded-md w-full max-h-[300px] md:max-h-[500px] my-8 object-cover'
 						alt={`img of ${title}`}
 					/>
+				) : (
+					coverImage && (
+						<Image
+							src={coverImage.src}
+							width={1000}
+							height={500}
+							quality={100}
+							format='jpg'
+							loading='eager'
+							class='rounded-md w-full max-h-[300px]  md:max-h-[500px] my-8 object-cover'
+							alt={`img of ${title}`}
+						/>
+					)
 				)
 			}
 		</>

@@ -12,11 +12,24 @@ const blog = defineCollection({
 				.string()
 				.or(z.date())
 				.transform((val) => new Date(val)),
-			heroImage: image(),
+			heroImage: image().optional(),
+			heroImageUrl: z
+				.string()
+				.trim()
+				.optional()
+				.or(z.literal(''))
+				.transform((val) => val || undefined)
+				.refine((val) => !val || z.string().url().safeParse(val).success, {
+					message: 'heroImageUrl must be a valid URL'
+				}),
 			category: z.enum(CATEGORIES),
 			tags: z.array(z.string()),
 			draft: z.boolean().default(false)
 		})
+			.refine((data) => data.heroImage || data.heroImageUrl, {
+				message: 'Either heroImage or heroImageUrl is required',
+				path: ['heroImageUrl']
+			})
 })
 
 export const collections = { blog }

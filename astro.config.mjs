@@ -3,6 +3,7 @@ import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
 import rehypeExternalLinks from 'rehype-external-links'
+import { remarkLinkedImages } from './src/utils/remarkLinkedImages.js'
 import { remarkReadingTime } from './src/utils/readTime.ts'
 import { siteConfig } from './src/data/site.config'
 
@@ -10,15 +11,9 @@ import { siteConfig } from './src/data/site.config'
 export default defineConfig({
 	site: siteConfig.site,
 	outDir: './dist',
-	i18n: {
-		defaultLocale: 'en',
-		locales: ['en', 'zh'],
-		routing: {
-			prefixDefaultLocale: false
-		}
-	},
+	trailingSlash: 'always',
 	markdown: {
-		remarkPlugins: [remarkReadingTime],
+		remarkPlugins: [remarkReadingTime, remarkLinkedImages],
 		rehypePlugins: [
 			[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
 		],
@@ -48,7 +43,8 @@ export default defineConfig({
 				  },
 				wrap: true
 			},
-			drafts: true
+			drafts: true,
+			remarkPlugins: [remarkLinkedImages]
 		}),
 		sitemap(),
 		tailwind()

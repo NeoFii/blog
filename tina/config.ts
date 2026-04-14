@@ -7,7 +7,7 @@ const branch = process.env.HEAD || process.env.VERCEL_GIT_COMMIT_REF || 'main'
 export default defineConfig({
 	branch,
 	clientId: process.env.TINA_PUBLIC_CLIENT_ID,
-token: process.env.TINA_TOKEN,
+	token: process.env.TINA_TOKEN,
 
 	build: {
 		outputFolder: 'admin',
@@ -30,9 +30,30 @@ token: process.env.TINA_TOKEN,
 					{
 						type: 'image',
 						label: 'Cover Image',
-						required: true,
+						required: false,
 						name: 'heroImage',
-						description: 'The image used for the cover of the post'
+						description: 'Upload a local cover image, or use the cover image URL field below'
+					},
+					{
+						type: 'string',
+						label: 'Cover Image URL',
+						name: 'heroImageUrl',
+						description: 'Paste a direct Cloudflare image URL if you do not want to upload a local image',
+						ui: {
+							validate(value, allValues) {
+								if (!value && !allValues?.heroImage) {
+									return 'Provide either a local cover image or a cover image URL.'
+								}
+
+								if (!value) return
+
+								try {
+									new URL(value)
+								} catch {
+									return 'Cover image URL must be a valid URL.'
+								}
+							}
+						}
 					},
 
 					{
