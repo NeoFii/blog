@@ -14,8 +14,8 @@ export const siteConfig: SiteConfig = {
 	author: 'NeoFii', // Site author
 	title: 'Blog', // Site title.
 	description: '', // Description to display in the meta tags
-	lang: 'zh_CN',
-	ogLocale: 'zh_CN',
+	lang: 'en_US',
+	ogLocale: 'en_US',
 	shareMessage: 'Share this post', // Message to share a post on social media
 	paginationSize: 6 // Number of posts per page
 }

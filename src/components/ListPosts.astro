@@ -2,16 +2,13 @@
 import type { CollectionEntry } from 'astro:content'
 import PostCard from '@/components/PostCard'
 import { cn } from '@/utils'
-import { getLangFromUrl, type Lang } from '@/i18n/utils'
 
 type Props = {
 	posts: CollectionEntry<'blog'>[]
 	FirstBig?: boolean
-	lang?: Lang
 }
 
-const { posts, FirstBig = false, lang: propLang } = Astro.props
-const lang = propLang || getLangFromUrl(Astro.url)
+const { posts, FirstBig = false } = Astro.props
 ---
 
 <section
@@ -30,7 +27,6 @@ const lang = propLang || getLangFromUrl(Astro.url)
 					data={post.data}
 					slug={post.slug}
 					readTime={remarkPluginFrontmatter.minutesRead}
-					lang={lang}
 				/>
 			)
 		})

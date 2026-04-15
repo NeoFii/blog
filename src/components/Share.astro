@@ -1,22 +1,13 @@
 ---
 import TwitterColorIcon from './icons/TwitterColorIcon.astro'
 import LinkedinColorIcon from './icons/LinkedinColorIcon.astro'
-import { getLangFromUrl, useTranslations, type Lang } from '@/i18n/utils'
-
-interface Props {
-	lang?: Lang
-}
-
-const { lang: propLang } = Astro.props
-const lang = propLang || getLangFromUrl(Astro.url)
-const t = useTranslations(lang)
-const message = t('share.message')
+const message = 'Share this post'
 
 const URL = Astro.url.href
 ---
 
 <div class='flex flex-col gap-2'>
-	<span class='mb-1 font-bold text-2xl'>{t('post.share')}</span>
+	<span class='mb-1 font-bold text-2xl'>Share</span>
 	<ul class='flex gap-3 text-black dark:text-white'>
 		<li>
 			<a

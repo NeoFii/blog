@@ -4,16 +4,12 @@ import type { CollectionEntry } from 'astro:content'
 import { cn } from '@/utils'
 import { resolveCoverImage } from '@/utils'
 import { Image } from 'astro:assets'
-import { getLangFromUrl, useTranslations, getLocalePath, type Lang } from '@/i18n/utils'
 
 type Props = {
 	posts: CollectionEntry<'blog'>[]
-	lang?: Lang
 }
 
-const { posts, lang: propLang } = Astro.props
-const lang = propLang || getLangFromUrl(Astro.url)
-const t = useTranslations(lang)
+const { posts } = Astro.props
 ---
 
 <section class={cn(`flex flex-col md:flex-row sm:justify-between gap-8`)}>
@@ -50,7 +46,7 @@ const t = useTranslations(lang)
 						<header class='flex justify-center items-center'>
 							<a
 								class='font-medium  hover:underline'
-								href={getLocalePath(lang, `/post/${post.slug}/`)}
+								href={`/post/${post.slug}/`}
 							>
 								{post.data.title}
 							</a>
@@ -59,7 +55,7 @@ const t = useTranslations(lang)
 				)
 			})
 		) : (
-			<span class='text-gray-500'>{t('post.noRelated')}</span>
+			<span class='text-gray-500'>There are no related posts yet. 😢</span>
 		)
 	}
 </section>

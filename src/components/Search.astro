@@ -3,14 +3,6 @@
 
 import '@pagefind/default-ui/css/ui.css'
 import SearchIcon from '@/components/icons/SearchIcon'
-import { useTranslations, type Lang } from '@/i18n/utils'
-
-interface Props {
-	lang: Lang
-}
-
-const { lang } = Astro.props
-const t = useTranslations(lang)
 ---
 
 <site-search id='search' class='ms-auto'>
@@ -25,12 +17,15 @@ const t = useTranslations(lang)
 			<button
 				data-close-modal
 				class='ms-auto cursor-pointer rounded-full bg-black text-white px-4 py-2 dark:bg-white dark:text-black'
-				>{t('nav.search.close')}</button
+				>Close</button
 			>
 			{
 				import.meta.env.DEV ? (
 					<div class='mx-auto text-center dark:text-white'>
-						<p>{t('search.devOnly')}</p>
+						<p>
+							Search is only available in production builds. Try building and previewing the
+							site to test it out locally.
+						</p>
 					</div>
 				) : (
 					<div class='search-container dark:text-white'>

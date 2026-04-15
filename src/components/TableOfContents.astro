@@ -1,15 +1,11 @@
 ---
 import TableOfContentsHeading from '@/components/TabletOfContentsHeading'
-import { getLangFromUrl, useTranslations, type Lang } from '@/i18n/utils'
 
 interface Props {
 	headings: any[]
-	lang?: Lang
 }
 
-const { headings, lang: propLang } = Astro.props
-const lang = propLang || getLangFromUrl(Astro.url)
-const t = useTranslations(lang)
+const { headings } = Astro.props
 
 type TableOfContent = {
 	depth: number
@@ -37,7 +33,7 @@ function buildToc(headings: TableOfContent[]) {
 ---
 
 <nav class='max-w-xs dark:text-black'>
-	<p class='font-bold mb-3 text-2xl dark:text-white'>{t('post.toc')}</p>
+	<p class='font-bold mb-3 text-2xl dark:text-white'>Index</p>
 	<ul class='[text-wrap:balance] flex flex-col gap-1'>
 		{toc.map((heading) => <TableOfContentsHeading heading={heading} />)}
 	</ul>

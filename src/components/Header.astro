@@ -5,22 +5,10 @@ import Search from '@/components/Search'
 import TagIcon from './icons/TagIcon.astro'
 import ToggleTheme from './ToggleTheme.astro'
 import { SOCIALNETWORKS } from '@/data/links'
-import { useTranslations, getLocalePath, type Lang } from '@/i18n/utils'
-import { languages } from '@/i18n/ui'
-
-interface Props {
-	lang: Lang
-}
-
-const { lang } = Astro.props
-const t = useTranslations(lang)
-const switchLang = lang === 'zh' ? 'en' : 'zh'
-const currentPath = Astro.url.pathname
-const switchPath = lang === 'zh' ? currentPath.replace(/^\/zh(?=\/|$)/, '') || '/' : `/zh${currentPath === '/' ? '' : currentPath}`
 ---
 
 <header class='relative flex items-center h-12 font-semibold'>
-	<a class='text-lg mr-auto' href={getLocalePath(lang, '/')}>{t('nav.home')}</a>
+	<a class='text-lg mr-auto' href='/'>Home</a>
 
 	<div
 		id='astro-header-drawer'
@@ -33,11 +21,11 @@ const switchPath = lang === 'zh' ? currentPath.replace(/^\/zh(?=\/|$)/, '') || '
 				class='flex flex-col gap-4 md:flex-row md:border-r-2 border-black pr-4 dark:border-white'
 			>
 				<HeaderLink
-					href={getLocalePath(lang, '/tags')}
+					href='/tags/'
 					class='flex items-center gap-1 text-2xl md:text-base'
 				>
 					<TagIcon />
-					{t('nav.tags')}
+					Tags
 				</HeaderLink>
 			</div>
 
@@ -54,15 +42,8 @@ const switchPath = lang === 'zh' ? currentPath.replace(/^\/zh(?=\/|$)/, '') || '
 	</div>
 
 	<div class='flex items-center gap-3 md:pl-3' transition:persist='navbar'>
-		<a
-			href={switchPath}
-			class='text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors'
-			aria-label={`Switch to ${languages[switchLang]}`}
-		>
-			{languages[switchLang]}
-		</a>
 		<div>
-			<Search lang={lang} />
+			<Search />
 		</div>
 		<ToggleTheme />
 		<button id='astro-header-drawer-button' type='button' class='md:ml-6 md:hidden'>

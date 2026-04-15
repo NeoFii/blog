@@ -5,7 +5,6 @@ import BaseLayout from '@/layouts/BaseLayout'
 import Tag from '@/components/Tag'
 import type { MarkdownHeading } from 'astro'
 import { Image } from 'astro:assets'
-import { getLangFromUrl, useTranslations } from '@/i18n/utils'
 import { resolveCoverImage } from '@/utils'
 
 type Props = {
@@ -19,8 +18,6 @@ const { data, readTime, headings, id } = Astro.props
 const { title, description, pubDate, tags } = data
 
 const articleDate = pubDate.toISOString()
-const lang = getLangFromUrl(Astro.url)
-const t = useTranslations(lang)
 const coverImage = resolveCoverImage(data)
 ---
 
@@ -35,14 +32,12 @@ const coverImage = resolveCoverImage(data)
 			<div class='flex flex-col gap-2'>
 				<div class='flex items-center justify-center gap-x-1'>
 					<p class='text-center text-sm text-opacity-50'>
-						{t('post.published')}
-						<FormattedDate date={pubDate} lang={lang} />
+						Published
+						<FormattedDate date={pubDate} />
 					</p>
-					<p class='text-center text-sm text-opacity-50 font-bold'>
-						- {readTime}
-					</p>
+					<p class='text-center text-sm text-opacity-50 font-bold'>{readTime}</p>
 				</div>
-				<h1 class='text-center text-4xl md:text-6xl md:pb-2.5 font-semibold'>
+				<h1 class='text-center text-3xl md:text-5xl md:pb-2.5 font-semibold'>
 					{title}
 				</h1>
 			</div>
@@ -83,6 +78,25 @@ const coverImage = resolveCoverImage(data)
 		<div>
 			<slot />
 		</div>
+
+		<dialog class='article-image-lightbox' data-article-image-lightbox>
+			<div class='article-image-lightbox-frame' data-article-image-lightbox-frame>
+				<button
+					type='button'
+					class='article-image-lightbox-close'
+					data-article-image-lightbox-close
+					aria-label='Close image preview'
+				>
+					Close
+				</button>
+				<img
+					class='article-image-lightbox-image'
+					data-article-image-lightbox-image
+					alt=''
+				/>
+				<p class='article-image-lightbox-caption' data-article-image-lightbox-caption></p>
+			</div>
+		</dialog>
 	</article>
 </BaseLayout>
 
@@ -135,6 +149,52 @@ const coverImage = resolveCoverImage(data)
 			observer.observe(heading)
 		})
 	}
+
+	const bindArticleImageLightbox = () => {
+		const dialog = document.querySelector('[data-article-image-lightbox]')
+		if (!(dialog instanceof HTMLDialogElement) || dialog.dataset.bound === 'true') return
+
+		const frame = dialog.querySelector('[data-article-image-lightbox-frame]')
+		const image = dialog.querySelector('[data-article-image-lightbox-image]')
+		const caption = dialog.querySelector('[data-article-image-lightbox-caption]')
+		const closeButton = dialog.querySelector('[data-article-image-lightbox-close]')
+
+		if (
+			!(frame instanceof HTMLElement) ||
+			!(image instanceof HTMLImageElement) ||
+			!(caption instanceof HTMLElement) ||
+			!(closeButton instanceof HTMLButtonElement)
+		) {
+			return
+		}
+
+		dialog.dataset.bound = 'true'
+
+		document.addEventListener('click', (event) => {
+			const target = event.target
+			if (!(target instanceof HTMLElement)) return
+
+			const trigger = target.closest('.article-embedded-image-trigger')
+			if (!(trigger instanceof HTMLButtonElement)) return
+
+			image.src = trigger.dataset.embeddedImageSrc || ''
+			image.alt = trigger.dataset.embeddedImageCaption || ''
+			caption.textContent = trigger.dataset.embeddedImageCaption || ''
+			caption.hidden = !caption.textContent
+			dialog.showModal()
+		})
+
+		closeButton.addEventListener('click', () => dialog.close())
+
+		dialog.addEventListener('click', (event) => {
+			if (!frame.contains(event.target)) {
+				dialog.close()
+			}
+		})
+	}
+
 	fnObserver()
+	bindArticleImageLightbox()
 	document.addEventListener('astro:after-swap', fnObserver)
+	document.addEventListener('astro:after-swap', bindArticleImageLightbox)
 </script>

@@ -9,6 +9,7 @@ node_modules/
 .codex
 .vercel/
 .vscode/
+.worktrees/
 
 
 # logs
