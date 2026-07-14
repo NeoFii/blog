@@ -1,0 +1,24 @@
+{{- $scratch := newScratch }}
+
+{{- if not .Date.IsZero -}}
+    {{- $dateStr := .Date | time.Format ":date_long" }}
+    {{- $scratch.Add "meta" (slice (printf "Date: %s" $dateStr)) }}
+{{- end }}
+
+{{- if (.Param "ShowReadingTime") -}}
+    {{- /* Chinese reading speed: ~300-400 chars/min. Use char count for CJK-heavy content. */}}
+    {{- $charCount := strings.RuneCount .RawContent }}
+    {{- $mins := div $charCount 350 }}
+    {{- if lt $mins 1 }}{{ $mins = 1 }}{{ end }}
+    {{- $scratch.Add "meta" (slice (printf "Estimated Reading Time: %d min" $mins)) }}
+{{- end }}
+
+{{- if not (.Param "hideAuthor") -}}
+    {{- with (partial "author.html" .) }}
+        {{- $scratch.Add "meta" (slice (printf "Author: %s" .)) }}
+    {{- end }}
+{{- end }}
+
+{{- with ($scratch.Get "meta") }}
+    {{- delimit . " | " | safeHTML -}}
+{{- end -}}

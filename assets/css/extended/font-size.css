@@ -1,0 +1,56 @@
+/* Custom overrides — closer to original lilianweng.github.io styling */
+
+/* --- Font sizes --- */
+body {
+    font-size: 16px;
+}
+
+.post-title {
+    font-size: 32px;
+}
+
+.entry-header h2 {
+    font-size: 26px;
+}
+
+.post-content h1 {
+    font-size: 32px;
+}
+
+.post-content h2 {
+    font-size: 24px;
+}
+
+.post-content h3 {
+    font-size: 19px;
+}
+
+.post-content h4 {
+    font-size: 16px;
+}
+
+.post-content h5 {
+    font-size: 14px;
+}
+
+.post-content h6 {
+    font-size: 13px;
+}
+
+.post-content code {
+    font-size: 14px;
+}
+
+.post-content pre code {
+    font-size: 13px;
+}
+
+/* --- Tighter header spacing --- */
+.main {
+    padding-top: 10px;
+}
+
+.first-entry {
+    margin-top: 6px;
+    min-height: 200px;
+}

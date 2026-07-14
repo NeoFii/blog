@@ -1,0 +1,54 @@
+baseURL: "https://blog.neofii.fun/"
+title: "NeoFii's BLOG"
+theme: "PaperMod"
+locale: "zh-cn"
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+            - ["$$", "$$"]
+          inline:
+            - ["$", "$"]
+        enable: true
+
+ignoreLogs:
+  - "warning-goldmark-raw-html"
+
+params:
+  assets:
+    favicon: "/favicon.ico"
+    favicon16x16: "/favicon-16x16.png"
+    favicon32x32: "/favicon-32x32.png"
+    apple_touch_icon: "/apple-touch-icon.png"
+  homeInfoParams:
+    Title: "Welcome to NeoFii's Blog."
+    Content: "This is NeoFii, an undergraduate, major in CS."
+  socialIcons:
+    - name: github
+      url: "https://github.com/NeoFii"
+  mainSections: ["posts"]
+  ShowReadingTime: true
+  ShowToc: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: false
+  ShowCodeCopyButtons: true
+
+menu:
+  main:
+    - identifier: posts
+      name: Posts
+      url: /
+      weight: 10
+    - identifier: archives
+      name: Archive
+      url: /archives/
+      weight: 20
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 30
